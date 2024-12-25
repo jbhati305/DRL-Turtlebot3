@@ -179,21 +179,21 @@ def generate_launch_description():
         remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
     )
 
-    # trajectory_node = Node(
-    #     package="mogi_trajectory_server",
-    #     executable="mogi_trajectory_server",
-    #     name="mogi_trajectory_server",
-    # )
+    trajectory_node = Node(
+        package="mogi_trajectory_server",
+        executable="mogi_trajectory_server",
+        name="mogi_trajectory_server",
+    )
 
-    # trajectory_filtered_node = Node(
-    #     package="mogi_trajectory_server",
-    #     executable="mogi_trajectory_server",
-    #     name="mogi_trajectory_server_filtered",
-    #     parameters=[
-    #         {"trajectory_topic": "trajectory_filtered"},
-    #         {"odometry_topic": "odometry/filtered"},
-    #     ],
-    # )
+    trajectory_filtered_node = Node(
+        package="mogi_trajectory_server",
+        executable="mogi_trajectory_server",
+        name="mogi_trajectory_server_filtered",
+        parameters=[
+            {"trajectory_topic": "trajectory_filtered"},
+            {"odometry_topic": "odometry/filtered"},
+        ],
+    )
 
     ekf_node = Node(
         package="robot_localization",
@@ -223,8 +223,8 @@ def generate_launch_description():
     launchDescriptionObject.add_action(gz_image_bridge_node)
     launchDescriptionObject.add_action(relay_camera_info_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
-    # launchDescriptionObject.add_action(trajectory_node)
-    # launchDescriptionObject.add_action(trajectory_filtered_node)
+    launchDescriptionObject.add_action(trajectory_node)
+    launchDescriptionObject.add_action(trajectory_filtered_node)
     launchDescriptionObject.add_action(ekf_node)
 
     return launchDescriptionObject
