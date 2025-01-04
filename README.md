@@ -1,7 +1,5 @@
 # DRL-Turtlebot3
-I have created this project to implement deep reinforcement learning for autonomous navigation and exploration using turtlebot3_waffle and ROS2-Jazzy with Gazebo Harmonic. 
-
-
+I have created this project to implement deep reinforcement learning for autonomous navigation and exploration using turtlebot3_waffle and ROS2-Jazzy with Gazebo Harmonic.
 
 ```
 cd ~/DRL-Turtlebot3
@@ -26,3 +24,6 @@ ros2 launch tb3_navigation navigation_with_slam.launch.py
 1. Implementing EKF by myself in cpp.
 2. Implement SLAM in CPP.
 
+```
+ ros2 run ekf_localization ekf_node 
+ ```
