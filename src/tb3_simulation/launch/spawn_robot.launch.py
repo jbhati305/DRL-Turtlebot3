@@ -121,9 +121,9 @@ def generate_launch_description():
             # "/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V",
             # "/camera@sensor_msgs/msg/Image@gz.msgs.Image",
             "/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo",
-            "scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
+            "/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
             "/scan/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked",
-            "imu@sensor_msgs/msg/Imu@gz.msgs.IMU",
+            "/imu@sensor_msgs/msg/Imu@gz.msgs.IMU",
             "/navsat@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat",
             "/camera/depth_image@sensor_msgs/msg/Image@gz.msgs.Image",
             "/camera/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked",
@@ -172,28 +172,28 @@ def generate_launch_description():
         output="screen",
         parameters=[
             {
-                "robot_description": Command(["xacro", " ", urdf_file_path]),
+                "robot_description": Command(["cat", " ", urdf_file_path]),
                 "use_sim_time": LaunchConfiguration("use_sim_time"),
             },
         ],
         remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
     )
 
-    trajectory_node = Node(
-        package="mogi_trajectory_server",
-        executable="mogi_trajectory_server",
-        name="mogi_trajectory_server",
-    )
+    # trajectory_node = Node(
+    #     package="mogi_trajectory_server",
+    #     executable="mogi_trajectory_server",
+    #     name="mogi_trajectory_server",
+    # )
 
-    trajectory_filtered_node = Node(
-        package="mogi_trajectory_server",
-        executable="mogi_trajectory_server",
-        name="mogi_trajectory_server_filtered",
-        parameters=[
-            {"trajectory_topic": "trajectory_filtered"},
-            {"odometry_topic": "odometry/filtered"},
-        ],
-    )
+    # trajectory_filtered_node = Node(
+    #     package="mogi_trajectory_server",
+    #     executable="mogi_trajectory_server",
+    #     name="mogi_trajectory_server_filtered",
+    #     parameters=[
+    #         {"trajectory_topic": "trajectory_filtered"},
+    #         {"odometry_topic": "odometry/filtered"},
+    #     ],
+    # )
 
     ekf_node = Node(
         package="robot_localization",
@@ -217,14 +217,14 @@ def generate_launch_description():
     launchDescriptionObject.add_action(yaw_arg)
     launchDescriptionObject.add_action(sim_time_arg)
     launchDescriptionObject.add_action(world_launch)
-    launchDescriptionObject.add_action(rviz_node)
+    # launchDescriptionObject.add_action(rviz_node)
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(gz_bridge_node)
     launchDescriptionObject.add_action(gz_image_bridge_node)
     launchDescriptionObject.add_action(relay_camera_info_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
-    launchDescriptionObject.add_action(trajectory_node)
-    launchDescriptionObject.add_action(trajectory_filtered_node)
+    # launchDescriptionObject.add_action(trajectory_node)
+    # launchDescriptionObject.add_action(trajectory_filtered_node)
     launchDescriptionObject.add_action(ekf_node)
 
     return launchDescriptionObject
