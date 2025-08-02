@@ -34,6 +34,7 @@ class Controller(Node):
         self.current_pose = None
         self.path_index = 0
         self.is_navigating = False
+        self.odom_received = False
         
         # Timer for control loop
         self.control_timer = self.create_timer(0.1, self.control_loop)  # 10 Hz
@@ -50,6 +51,9 @@ class Controller(Node):
     def odom_callback(self, msg):
         """Update current robot pose from odometry"""
         self.current_pose = msg.pose.pose
+        if not self.odom_received:
+            self.odom_received = True
+            self.get_logger().info("Received first odometry data")
         
     def get_distance_to_goal(self):
         """Calculate distance to current goal"""
@@ -147,7 +151,11 @@ class Controller(Node):
         
     def control_loop(self):
         """Main control loop"""
-        if not self.is_navigating or not self.current_path or not self.current_pose:
+        if not self.is_navigating or not self.current_path:
+            return
+            
+        if not self.current_pose:
+            self.get_logger().warn("No robot pose available")
             return
             
         # Check if we've reached the current waypoint
@@ -167,6 +175,11 @@ class Controller(Node):
             
         # Generate control commands
         cmd_vel = self.pure_pursuit_control()
+        
+        # Log velocity commands
+        if abs(cmd_vel.linear.x) > 0.01 or abs(cmd_vel.angular.z) > 0.01:
+            self.get_logger().info(f"Publishing cmd_vel: linear.x={cmd_vel.linear.x:.3f}, angular.z={cmd_vel.angular.z:.3f}")
+        
         self.cmd_vel_pub.publish(cmd_vel)
         
         # Log progress
@@ -182,4 +195,4 @@ def main(args=None):
     rclpy.shutdown()
 
 if __name__ == '__main__':
-    main()
+    main() 

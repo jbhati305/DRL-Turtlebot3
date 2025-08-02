@@ -62,7 +62,7 @@
     <visual>
       <origin xyz="-0.064 0 0.0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://tb3_simulation/meshes/waffle_base.dae"
+        <mesh filename="/Users/jiteshbhati/Projects/DRL-Turtlebot3/src/tb3_simulation/meshes/waffle_base.dae"
           scale="0.001 0.001 0.001" />
       </geometry>
       <material name="orange" />
@@ -95,7 +95,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.57 0 0" />
       <geometry>
-        <mesh filename="package://tb3_simulation/meshes/tire.dae" scale="0.001 0.001 0.001" />
+        <mesh filename="/Users/jiteshbhati/Projects/DRL-Turtlebot3/src/tb3_simulation/meshes/tire.dae" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="black" />
     </visual>
@@ -127,7 +127,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.57 0 0" />
       <geometry>
-        <mesh filename="package://tb3_simulation/meshes/tire.dae" scale="0.001 0.001 0.001" />
+        <mesh filename="/Users/jiteshbhati/Projects/DRL-Turtlebot3/src/tb3_simulation/meshes/tire.dae" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="black" />
     </visual>
@@ -212,7 +212,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://tb3_simulation/meshes/lds.dae" scale="0.001 0.001 0.001" />
+        <mesh filename="/Users/jiteshbhati/Projects/DRL-Turtlebot3/src/tb3_simulation/meshes/lds.dae" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="dark" />
     </visual>
@@ -245,7 +245,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.57 0 1.57" />
       <geometry>
-        <mesh filename="package://tb3_simulation/meshes/r200.dae" />
+        <mesh filename="/Users/jiteshbhati/Projects/DRL-Turtlebot3/src/tb3_simulation/meshes/r200.dae" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
     <collision>
@@ -327,4 +327,53 @@
     <material>Gazebo/Red</material>
   </gazebo>
 
+  <!-- Include Gazebo plugins -->
+  <gazebo>
+    <plugin
+        filename="gz-sim-diff-drive-system"
+        name="gz::sim::systems::DiffDrive">
+        <!-- Topic for the command input -->
+        <topic>/cmd_vel</topic>
+
+        <!-- Wheel joints -->
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+
+        <!-- Wheel parameters -->
+        <wheel_separation>0.287</wheel_separation>
+        <wheel_radius>0.033</wheel_radius>
+
+        <!-- Control gains and limits -->
+        <max_velocity>3.0</max_velocity>
+        <max_linear_acceleration>1</max_linear_acceleration>
+        <min_linear_acceleration>-1</min_linear_acceleration>
+        <max_angular_acceleration>2</max_angular_acceleration>
+        <min_angular_acceleration>-2</min_angular_acceleration>
+        <max_linear_velocity>0.5</max_linear_velocity>
+        <min_linear_velocity>-0.5</min_linear_velocity>
+        <max_angular_velocity>1</max_angular_velocity>
+        <min_angular_velocity>-1</min_angular_velocity>
+        
+        <!-- Other parameters -->
+        <odom_topic>odom</odom_topic>
+        <tf_topic>tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_publish_frequency>30</odom_publish_frequency>
+    </plugin>
+
+    <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <topic>joint_states</topic>
+        <joint_name>left_wheel_joint</joint_name>
+        <joint_name>right_wheel_joint</joint_name>
+    </plugin>
+  </gazebo>
+ros2 launch tb3_simulation spawn_robot.launch.py
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2025-08-01-10-56-36-951060-4_xterm-1427
+[INFO] [launch]: Default logging verbosity is set to INFO
+[ERROR] [launch]: Caught exception in launch (see debug for traceback): Caught multiple exceptions when trying to load file of format [py]:
+ - KeyError: 'GZ_SIM_RESOURCE_PATH'
+ - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 </robot>

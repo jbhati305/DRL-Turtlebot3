@@ -38,22 +38,22 @@ def generate_launch_description():
             shell=True
         )
 
-        # Launch GUI after a short delay to ensure server is ready
-        gazebo_gui = TimerAction(
-            period=2.0,
-            actions=[
-                ExecuteProcess(
-                    cmd=['gz', 'sim', '-g'],
-                    output='screen',
-                    shell=True
-                )
-            ]
-        )
+        # # Launch GUI after a short delay to ensure server is ready
+        # gazebo_gui = TimerAction(
+        #     period=2.0,
+        #     actions=[
+        #         ExecuteProcess(
+        #             cmd=['gz', 'sim', '-g'],
+        #             output='screen',
+        #             shell=True
+        #         )
+        #     ]
+        # )
 
         launchDescriptionObject = LaunchDescription()
         launchDescriptionObject.add_action(world_arg)
         launchDescriptionObject.add_action(gazebo_server)
-        launchDescriptionObject.add_action(gazebo_gui)
+        # launchDescriptionObject.add_action(gazebo_gui)
 
     else:
         # On Linux, use the standard approach

@@ -3,7 +3,7 @@
 <package format="3">
   <name>drl_navigation</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Custom navigation stack built from scratch</description>
   <maintainer email="j_bhati@mt.iitr.ac.in">jiteshbhati</maintainer>
   <license>TODO: License declaration</license>
 
@@ -11,6 +11,8 @@
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>tf2_ros</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
@@ -18,6 +20,6 @@
   <test_depend>python3-pytest</test_depend>
 
   <export>
-    <build_type>ament_python</build_type>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

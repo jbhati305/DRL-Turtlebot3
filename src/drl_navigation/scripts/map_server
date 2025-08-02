@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node
+from nav_msgs.msg import OccupancyGrid
+from geometry_msgs.msg import Pose
+import yaml
+import os
+from ament_index_python.packages import get_package_share_directory
+
+class MapServer(Node):
+    def __init__(self):
+        super().__init__('map_server')
+        
+        # Publisher for the map
+        self.map_pub = self.create_publisher(OccupancyGrid, '/map', 10)
+        
+        # Timer to publish map periodically
+        self.timer = self.create_timer(1.0, self.publish_map)
+        
+        # Load map data
+        self.map_data = None
+        self.map_info = None
+        self.load_map()
+        
+        self.get_logger().info("Map Server initialized")
+        
+    def load_map(self):
+        """Load the map from the maps directory"""
+        try:
+            # Get package directory
+            pkg_dir = get_package_share_directory('drl_navigation')
+            map_dir = os.path.join(pkg_dir, 'maps')
+            
+            # Load YAML file
+            yaml_file = os.path.join(map_dir, 'my_map.yaml')
+            with open(yaml_file, 'r') as file:
+                map_info = yaml.safe_load(file)
+            
+            # Load PGM file
+            pgm_file = os.path.join(map_dir, map_info['image'])
+            with open(pgm_file, 'rb') as file:
+                # Read magic number (should be P5)
+                magic = file.readline().decode('utf-8').strip()
+                if magic != 'P5':
+                    raise ValueError(f"Invalid PGM format: expected P5, got {magic}")
+                
+                # Skip comments
+                line = file.readline().decode('utf-8').strip()
+                while line.startswith('#'):
+                    line = file.readline().decode('utf-8').strip()
+                
+                # Read dimensions
+                width, height = map(int, line.split())
+                
+                # Read max value
+                max_val = int(file.readline().decode('utf-8').strip())
+                
+                # Read image data
+                data = []
+                for _ in range(height):
+                    row = []
+                    for _ in range(width):
+                        pixel = int.from_bytes(file.read(1), byteorder='big')
+                        # Convert to occupancy grid format (0-100)
+                        if pixel == 0:  # Black (occupied)
+                            row.append(100)
+                        elif pixel == 255:  # White (free)
+                            row.append(0)
+                        else:  # Gray (unknown)
+                            row.append(-1)
+                    data.extend(row)
+            
+            self.map_data = data
+            self.map_info = map_info
+            self.map_info['width'] = width
+            self.map_info['height'] = height
+            
+            self.get_logger().info(f"Map loaded: {width}x{height}, resolution: {map_info['resolution']}")
+            
+        except Exception as e:
+            self.get_logger().error(f"Failed to load map: {e}")
+            
+    def publish_map(self):
+        """Publish the map"""
+        if self.map_data is None or self.map_info is None:
+            return
+            
+        map_msg = OccupancyGrid()
+        map_msg.header.frame_id = "map"
+        map_msg.header.stamp = self.get_clock().now().to_msg()
+        
+        # Set map info
+        map_msg.info.resolution = self.map_info['resolution']
+        map_msg.info.width = self.map_info['width']
+        map_msg.info.height = self.map_info['height']
+        
+        # Set origin
+        origin = self.map_info['origin']
+        map_msg.info.origin.position.x = origin[0]
+        map_msg.info.origin.position.y = origin[1]
+        map_msg.info.origin.position.z = origin[2]
+        map_msg.info.origin.orientation.w = 1.0
+        
+        # Set map data
+        map_msg.data = self.map_data
+        
+        self.map_pub.publish(map_msg)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = MapServer()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main() 

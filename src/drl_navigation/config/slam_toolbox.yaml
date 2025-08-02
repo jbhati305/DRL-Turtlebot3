@@ -1,0 +1,38 @@
+slam_toolbox:
+  ros__parameters:
+    # Basic parameters
+    use_sim_time: true
+    max_laser_range: 20.0
+    minimum_time_interval: 0.5
+    transform_timeout: 0.2
+    
+    # Map parameters
+    map_update_interval: 5.0
+    max_queue_size: 10
+    resolution: 0.05
+    max_queue_size: 10
+    
+    # Scan matching parameters
+    use_scan_matching: true
+    use_scan_barycenter: true
+    minimum_time_interval: 0.5
+    transform_timeout: 0.2
+    update_rate: 5.0
+    
+    # Optimization parameters
+    max_iterations: 20
+    max_iterations_linear: 20
+    max_correspondence_cost: 2.0
+    max_angular_correction_deg: 20.0
+    max_linear_correction: 0.5
+    epsilon_xy: 0.000001
+    epsilon_theta: 0.000001
+    
+    # Loop closure parameters
+    use_loop_closure: true
+    loop_match_ratio_threshold: 0.9
+    loop_match_maximum_distance: 4.0
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 0.016
+    loop_match_minimum_coarse_covariance: 0.01
+    loop_match_minimum_fine_covariance: 0.01 

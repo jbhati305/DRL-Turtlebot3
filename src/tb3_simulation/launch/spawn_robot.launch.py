@@ -6,7 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
-
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
 
@@ -121,9 +121,9 @@ def generate_launch_description():
             # "/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V",
             # "/camera@sensor_msgs/msg/Image@gz.msgs.Image",
             "/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo",
-            "/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
+            "scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
             "/scan/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked",
-            "/imu@sensor_msgs/msg/Imu@gz.msgs.IMU",
+            "imu@sensor_msgs/msg/Imu@gz.msgs.IMU",
             "/navsat@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat",
             "/camera/depth_image@sensor_msgs/msg/Image@gz.msgs.Image",
             "/camera/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked",
@@ -172,28 +172,31 @@ def generate_launch_description():
         output="screen",
         parameters=[
             {
-                "robot_description": Command(["cat", " ", urdf_file_path]),
+                "robot_description": ParameterValue(
+                    Command(["xacro", " ", urdf_file_path]),
+                    value_type=str
+                ),
                 "use_sim_time": LaunchConfiguration("use_sim_time"),
             },
         ],
         remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
     )
 
-    # trajectory_node = Node(
-    #     package="mogi_trajectory_server",
-    #     executable="mogi_trajectory_server",
-    #     name="mogi_trajectory_server",
-    # )
+    trajectory_node = Node(
+        package="mogi_trajectory_server",
+        executable="mogi_trajectory_server",
+        name="mogi_trajectory_server",
+    )
 
-    # trajectory_filtered_node = Node(
-    #     package="mogi_trajectory_server",
-    #     executable="mogi_trajectory_server",
-    #     name="mogi_trajectory_server_filtered",
-    #     parameters=[
-    #         {"trajectory_topic": "trajectory_filtered"},
-    #         {"odometry_topic": "odometry/filtered"},
-    #     ],
-    # )
+    trajectory_filtered_node = Node(
+        package="mogi_trajectory_server",
+        executable="mogi_trajectory_server",
+        name="mogi_trajectory_server_filtered",
+        parameters=[
+            {"trajectory_topic": "trajectory_filtered"},
+            {"odometry_topic": "odometry/filtered"},
+        ],
+    )
 
     ekf_node = Node(
         package="robot_localization",

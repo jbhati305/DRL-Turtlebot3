@@ -1,7 +1,7 @@
 bt_navigator:
   ros__parameters:
     global_frame: map
-    robot_base_frame: base_footprint
+    robot_base_frame: base_link
     odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
@@ -85,7 +85,6 @@ controller_server:
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
-      # critics: ["BaseObstacle", "GoalDist", "PathDist"]
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
       PathAlign.scale: 32.0
@@ -98,96 +97,95 @@ controller_server:
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
       publish_cost_grid_pc: True
-
     # MPPI parameters, default controller is DWB above
-    # FollowPathMPPI:
-    #   plugin: "nav2_mppi_controller::MPPIController"
-    #   time_steps: 56
-    #   model_dt: 0.05
-    #   batch_size: 2000
-    #   ax_max: 3.0
-    #   ax_min: -3.0
-    #   ay_max: 3.0
-    #   az_max: 3.5
-    #   vx_std: 0.2
-    #   vy_std: 0.2
-    #   wz_std: 0.4
-    #   vx_max: 0.5
-    #   vx_min: -0.35
-    #   vy_max: 0.5
-    #   wz_max: 1.9
-    #   iteration_count: 1
-    #   prune_distance: 1.7
-    #   transform_tolerance: 0.1
-    #   temperature: 0.3
-    #   gamma: 0.015
-    #   motion_model: "DiffDrive"
-    #   visualize: true
-    #   regenerate_noises: true
-    #   TrajectoryVisualizer:
-    #     trajectory_step: 5
-    #     time_step: 3
-    #   AckermannConstraints:
-    #     min_turning_r: 0.2
-    #   critics: [
-    #     "ConstraintCritic", "CostCritic", "GoalCritic",
-    #     "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic",
-    #     "PathAngleCritic", "PreferForwardCritic"]
-    #   ConstraintCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 4.0
-    #   GoalCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 5.0
-    #     threshold_to_consider: 1.4
-    #   GoalAngleCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 3.0
-    #     threshold_to_consider: 0.5
-    #   PreferForwardCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 5.0
-    #     threshold_to_consider: 0.5
-    #   CostCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 3.81
-    #     critical_cost: 300.0
-    #     consider_footprint: true
-    #     collision_cost: 1000000.0
-    #     near_goal_distance: 1.0
-    #     trajectory_point_step: 2
-    #   PathAlignCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 14.0
-    #     max_path_occupancy_ratio: 0.05
-    #     trajectory_point_step: 4
-    #     threshold_to_consider: 0.5
-    #     offset_from_furthest: 20
-    #     use_path_orientations: false
-    #   PathFollowCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 5.0
-    #     offset_from_furthest: 5
-    #     threshold_to_consider: 1.4
-    #   PathAngleCritic:
-    #     enabled: true
-    #     cost_power: 1
-    #     cost_weight: 2.0
-    #     offset_from_furthest: 4
-    #     threshold_to_consider: 0.5
-    #     max_angle_to_furthest: 1.0
-    #     mode: 0
-    #   # TwirlingCritic:
-    #   #   enabled: true
-    #   #   twirling_cost_power: 1
-    #   #   twirling_cost_weight: 10.0
+    FollowPathMPPI:
+      plugin: "nav2_mppi_controller::MPPIController"
+      time_steps: 56
+      model_dt: 0.05
+      batch_size: 2000
+      ax_max: 3.0
+      ax_min: -3.0
+      ay_max: 3.0
+      az_max: 3.5
+      vx_std: 0.2
+      vy_std: 0.2
+      wz_std: 0.4
+      vx_max: 0.5
+      vx_min: -0.35
+      vy_max: 0.5
+      wz_max: 1.9
+      iteration_count: 1
+      prune_distance: 1.7
+      transform_tolerance: 0.1
+      temperature: 0.3
+      gamma: 0.015
+      motion_model: "DiffDrive"
+      visualize: true
+      regenerate_noises: true
+      TrajectoryVisualizer:
+        trajectory_step: 5
+        time_step: 3
+      AckermannConstraints:
+        min_turning_r: 0.2
+      critics: [
+        "ConstraintCritic", "CostCritic", "GoalCritic",
+        "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic",
+        "PathAngleCritic", "PreferForwardCritic"]
+      ConstraintCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 4.0
+      GoalCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        threshold_to_consider: 1.4
+      GoalAngleCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 3.0
+        threshold_to_consider: 0.5
+      PreferForwardCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        threshold_to_consider: 0.5
+      CostCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 3.81
+        critical_cost: 300.0
+        consider_footprint: true
+        collision_cost: 1000000.0
+        near_goal_distance: 1.0
+        trajectory_point_step: 2
+      PathAlignCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 14.0
+        max_path_occupancy_ratio: 0.05
+        trajectory_point_step: 4
+        threshold_to_consider: 0.5
+        offset_from_furthest: 20
+        use_path_orientations: false
+      PathFollowCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        offset_from_furthest: 5
+        threshold_to_consider: 1.4
+      PathAngleCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 2.0
+        offset_from_furthest: 4
+        threshold_to_consider: 0.5
+        max_angle_to_furthest: 1.0
+        mode: 0
+      # TwirlingCritic:
+      #   enabled: true
+      #   twirling_cost_power: 1
+      #   twirling_cost_weight: 10.0
 
 local_costmap:
   local_costmap:
@@ -195,7 +193,7 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: base_footprint
+      robot_base_frame: base_link
       rolling_window: true
       width: 3
       height: 3
@@ -237,8 +235,7 @@ global_costmap:
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
-      robot_base_frame: base_footprint
-
+      robot_base_frame: base_link
       robot_radius: 0.22
       resolution: 0.05
       track_unknown_space: true
@@ -307,7 +304,7 @@ behavior_server:
       plugin: "nav2_behaviors::AssistedTeleop"
     local_frame: odom
     global_frame: map
-    robot_base_frame: base_footprint
+    robot_base_frame: base_link
     transform_tolerance: 0.1
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
@@ -379,7 +376,7 @@ docking_server:
     undock_linear_tolerance: 0.05
     undock_angular_tolerance: 0.1
     max_retries: 3
-    base_frame: "base_footprint"
+    base_frame: "base_link"
     fixed_frame: "odom"
     dock_backwards: false
     dock_prestaging_tolerance: 0.5

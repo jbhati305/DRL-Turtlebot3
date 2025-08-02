@@ -181,7 +181,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /camera/image/compressed
+        Value: /camera/image
       Value: true
       Visibility:
         AerialMap: true
